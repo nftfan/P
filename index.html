@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Fans Database</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333333;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .wallet-address {
+            padding: 10px;
+            background-color: #444444;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .wallet-address:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 100%;
+            border-radius: 5px 0 0 5px;
+        }
+        .wallet-address.WINNER:before {
+            background-color: #f9bf1a; /* Yellow */
+        }
+        .wallet-address.SENT:before {
+            background-color: #5f9bf2; /* Blue */
+        }
+        .wallet-address.PENDING:before {
+            background-color: #ff6347; /* Tomato */
+        }
+        .wallet-address.LEVEL:before {
+            background-color: #32cd32; /* Lime Green */
+        }
+        .wallet-address.BITCOIN:before {
+            background-color: #d3d3d3; /* Light Grey */
+        }
+        .wallet-address-text {
+            word-break: break-all;
+        }
+        .icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body style="max-width: 800px; margin: 0 auto;">
+    <div class="header">
+        <h1>NFT Fans Database</h1>
+    </div>
+
+    <div id="walletsContainer">
+        <!-- Wallet addresses will be dynamically added here -->
+    </div>
+
+    <script>
+        // Define data for each status
+        var statusData = [
+            { status: "WINNER", dataString: `0x17ad66e208396df7f496c2ddbf5d5ea498f17d5c1
+0x003532936369ec520c6befeaf1001449480e3f111
+0x84E2Dc3f8fE0988c57C7aD54796c904Eee280188
+0xB930Bb9e4D4F513FE28fB0E7F1141F5223a2B644` },
+            { status: "SENT", dataString: `0xBCb871Eb6cA18b8832033601897963d825a4B490
+0xdB6f1920A889355780aF7570773609Bd8Cb1f498
+0x484e03d03a80a83B4c149b83044E2918F677a130
+0xD571a85C1EF27b60f03191dEcA134527dB357409
+0x01cCcFd804235b84b3b77Cc4E85864E1AA06CaCB
+0x86efb351b092A32D833a1Ad7374d9BF0fc164aAb
+0xc9e86B0512d3dF37b7fe88a10BFa1210bF2B6272
+0x4d6060bc10b501988ad49B008dd4E048C2d8E323` },
+            { status: "PENDING", dataString: `0xPending1
+0xPending2
+0xPending3` },
+            { status: "LEVEL", dataString: `0xLevel01
+0xLevel02
+0xLevel03` },
+            { status: "BITCOIN", dataString: `BitcoinAddress1
+BitcoinAddress2
+BitcoinAddress3` }
+        ];
+
+        // Function to shuffle array randomly
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+        // Get the container to hold wallet addresses
+        var walletsContainer = document.getElementById("walletsContainer");
+
+        // Collect all wallet addresses into one array
+        var allAddresses = [];
+        statusData.forEach(function(statusObj) {
+            var addresses = statusObj.dataString.split('\n');
+            allAddresses = allAddresses.concat(addresses);
+        });
+
+        // Shuffle all wallet addresses
+        shuffleArray(allAddresses);
+
+        // Function to create wallet address elements
+        function createWalletElements(addressArray) {
+            addressArray.forEach(function(address) {
+                // Trim the address
+                address = address.trim();
+
+                // Create a div element for the wallet address
+                var walletDiv = document.createElement("div");
+                walletDiv.className = "wallet-address";
+
+                // Create a div for wallet address text
+                var addressTextDiv = document.createElement("div");
+                addressTextDiv.className = "wallet-address-text";
+
+                // Add the wallet address text
+                var addressText = document.createTextNode(address);
+                addressTextDiv.appendChild(addressText);
+
+                // Add wallet address text to the wallet div
+                walletDiv.appendChild(addressTextDiv);
+
+                // Determine and add status class to wallet div
+                statusData.forEach(function(statusObj) {
+                    var addresses = statusObj.dataString.split('\n');
+                    if (addresses.includes(address)) {
+                        walletDiv.classList.add(statusObj.status);
+                    }
+                });
+
+                // If the wallet is a winner or sent, add icon
+                if (walletDiv.classList.contains("WINNER")) {
+                    var winnerIcon = document.createElement("img");
+                    winnerIcon.src = "https://blush-rear-pig-836.mypinata.cloud/ipfs/QmPdYh2xuterhLTNhy98SKyfqhRQNHowEZqQZamnhvHpDx";
+                    winnerIcon.alt = "Winner Icon";
+                    winnerIcon.className = "icon";
+                    walletDiv.appendChild(winnerIcon);
+                } else if (walletDiv.classList.contains("SENT")) {
+                    var sentIcon = document.createElement("img");
+                    sentIcon.src = "https://blush-rear-pig-836.mypinata.cloud/ipfs/QmSKvpzzmCMJS2W8MDz1XzMH1ajhorkMNzfr4LmFAxPkVq";
+                    sentIcon.alt = "Sent Icon";
+                    sentIcon.className = "icon";
+                    walletDiv.appendChild(sentIcon);
+                }
+				else if (walletDiv.classList.contains("LEVEL")) {
+                    var sentIcon = document.createElement("img");
+                    sentIcon.src = "https://blush-rear-pig-836.mypinata.cloud/ipfs/QmSKvpzzmCMJS2W8MDz1XzMH1ajhorkMNzfr4LmFAxPkVq";
+                    sentIcon.alt = "Sent Icon";
+                    sentIcon.className = "icon";
+                    walletDiv.appendChild(sentIcon);
+                }
+				else if (walletDiv.classList.contains("BITCOIN")) {
+                    var sentIcon = document.createElement("img");
+                    sentIcon.src = "https://blush-rear-pig-836.mypinata.cloud/ipfs/QmZBWJmQNhPJp2sj7JSqNKEyVyUmmzXs3eTvHa5cRYNMPw";
+                    sentIcon.alt = "Sent Icon";
+                    sentIcon.className = "icon";
+                    walletDiv.appendChild(sentIcon);
+                }
+
+                // Append the wallet div to the container
+                walletsContainer.appendChild(walletDiv);
+            });
+        }
+
+        // Create wallet elements
+        createWalletElements(allAddresses);
+    </script>
+</body>
+</html>
